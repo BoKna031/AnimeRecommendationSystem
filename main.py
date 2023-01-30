@@ -1,16 +1,22 @@
-# This is a sample Python script.
+import pandas as pd
+import util
+import cons
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+anime1_df = pd.read_csv("dataset/anime_1.csv")
+anime2_df = pd.read_csv("dataset/Anime.csv")
+
+print(anime2_df.info())
+genres = util.get_unique_values_from_column(anime1_df, 'Genres', ',')
+
+tags = util.get_unique_values_from_column(anime2_df, 'Tags', ',')
+print("Genres\n", cons.PRINT_SEP)
+print(*genres, sep='\n')
+print('\n     size = ', len(genres), '\n', cons.PRINT_SEP)
+
+print("Tags\n", cons.PRINT_SEP)
+print(*tags, sep='\n')
+print('\n     size = ', len(tags), '\n', cons.PRINT_SEP)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
