@@ -2,6 +2,7 @@ import os
 
 import pandas as pd
 import cons
+import time
 
 
 def get_unique_values_from_column(dataframe, column_name, separator):
@@ -41,4 +42,26 @@ def remove_inappropriate_content(df, column, separator, inappropriate_content):
     df[column] = df[column].str.split(separator)
     mask = df[column].apply(lambda content: any(inap_cont in content for inap_cont in inappropriate_content))
     inappropriate_df_index = df[mask].index
+    mal_ids = df.loc[inappropriate_df_index, 'MAL_ID']
     df.drop(inappropriate_df_index, inplace=True)
+    create_clean_rating_csv(mal_ids, ['watching_status', 'watched_episodes'], 'clean_rates.csv')
+
+
+def create_clean_rating_csv(mal_ids_to_delete, column_to_delete, filename):
+    start_time = time.time()
+    rates_df = pd.read_csv(cons.USER_RATINGS_CSV_PATH)
+    print("load rate csv after: %s sec" % (time.time() - start_time))
+    print("rate df num of rows: ", rates_df.shape)
+
+    print("delete column start")
+    start_time = time.time()
+    rates_df.drop(column_to_delete, axis=1, inplace=True)
+    print("delete column finish %s sec" % (time.time() - start_time))
+    print("new shape of df: ", rates_df.shape)
+
+    start_time = time.time()
+    rates_df.drop(rates_df[rates_df['anime_id'].isin(mal_ids_to_delete)].index, inplace=True)
+    print("drop time %s sec" % (time.time() - start_time))
+    print("rate df without inappropriate content num of rows: ", rates_df.shape[0])
+    print("new shape of df: ", rates_df.shape)
+    rates_df.to_csv(cons.DATASET_FOLDER + os.sep + filename, index=False)
