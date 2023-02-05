@@ -44,7 +44,7 @@ def remove_inappropriate_content(df, column, separator, inappropriate_content):
     inappropriate_df_index = df[mask].index
     mal_ids = df.loc[inappropriate_df_index, 'MAL_ID']
     df.drop(inappropriate_df_index, inplace=True)
-    create_clean_rating_csv(mal_ids, ['watching_status', 'watched_episodes'], 'clean_rates.csv')
+    return mal_ids
 
 
 def create_clean_rating_csv(mal_ids_to_delete, column_to_delete, filename):
@@ -64,4 +64,4 @@ def create_clean_rating_csv(mal_ids_to_delete, column_to_delete, filename):
     print("drop time %s sec" % (time.time() - start_time))
     print("rate df without inappropriate content num of rows: ", rates_df.shape[0])
     print("new shape of df: ", rates_df.shape)
-    rates_df.to_csv(cons.DATASET_FOLDER + os.sep + filename, index=False)
+    rates_df.to_csv(cons.DATASET_FOLDER + os.sep + filename + '.csv', index=False)
